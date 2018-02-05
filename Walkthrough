@@ -1,0 +1,58 @@
+Canu
+
+
+
+
+
+
+
+
+Scaff10X 
+
+1. Install: 
+wget https://sourceforge.net/projects/phusion2/files/scaff10x/scaff10x-v1.1.tar.gz
+gunzip scaff10x-v1.1.tar.gz 
+tar xvf scaff10x-v1.1.tar
+make 
+(If you want to execute the commands of scaff10x in your current path, you can put "export PATH=$PATH:/your/custom/path/for/scaff10X" in .bashrc file, otherwise you need to provide the full path everytime when you use it.)
+
+2. Barcode extraction: (We have four pairs of 10X genomic data)
+/home1/05158/yiliao/scaff10x/scaff_BC-reads-1 XOQT494-MC-1-AGTTCGGC_S7_L003_R1_001.fastq XOQT494-MC-1-AGTTCGGC_S7_L003_RC1_001.fastq XOQT494-MC-1-AGTTCGGC_S7_L003_BC_001.name > try1.out
+/home1/05158/yiliao/scaff10x/scaff_BC-reads-1 XOQT494-MC-1-CAGCATCA_S8_L003_R1_001.fastq XOQT494-MC-1-CAGCATCA_S8_L003_RC1_001.fastq XOQT494-MC-1-CAGCATCA_S8_L003_BC_001.name > try2.out
+/home1/05158/yiliao/scaff10x/scaff_BC-reads-1 XOQT494-MC-1-GTAATCTT_S5_L003_R1_001.fastq XOQT494-MC-1-GTAATCTT_S5_L003_RC1_001.fastq XOQT494-MC-1-GTAATCTT_S5_L003_BC_001.name > try3.out
+/home1/05158/yiliao/scaff10x/scaff_BC-reads-1 XOQT494-MC-1-TCCGGAAG_S6_L003_R1_001.fastq XOQT494-MC-1-TCCGGAAG_S6_L003_RC1_001.fastq XOQT494-MC-1-TCCGGAAG_S6_L003_BC_001.name > try4.out
+
+(Cat the above commands to Barcode_reads1)
+launcher_creator.py -n Barcode_reads1 -j Barcode_reads1 -q normal -a tagmap -w 4 -t 24:00:00 -e yiliao1022@gmail.com
+sbatch Barcode_reads1.slurm
+
+/home1/05158/yiliao/scaff10x/scaff_BC-reads-2 XOQT494-MC-1-AGTTCGGC_S7_L003_BC_001.name XOQT494-MC-1-AGTTCGGC_S7_L003_R2_001.fastq XOQT494-MC-1-AGTTCGGC_S7_L003_RC2_001.fastq > try1.out
+/home1/05158/yiliao/scaff10x/scaff_BC-reads-2 XOQT494-MC-1-CAGCATCA_S8_L003_BC_001.name XOQT494-MC-1-CAGCATCA_S8_L003_R2_001.fastq XOQT494-MC-1-CAGCATCA_S8_L003_RC2_001.fastq > try2.out
+/home1/05158/yiliao/scaff10x/scaff_BC-reads-2 XOQT494-MC-1-GTAATCTT_S5_L003_BC_001.name XOQT494-MC-1-GTAATCTT_S5_L003_R2_001.fastq XOQT494-MC-1-GTAATCTT_S5_L003_RC2_001.fastq > try3.out
+/home1/05158/yiliao/scaff10x/scaff_BC-reads-2 XOQT494-MC-1-TCCGGAAG_S6_L003_BC_001.name XOQT494-MC-1-TCCGGAAG_S6_L003_R2_001.fastq XOQT494-MC-1-TCCGGAAG_S6_L003_RC2_001.fastq > try4.out
+
+(Cat the above commands to Barcode_reads2)
+launcher_creator.py -n Barcode_reads2 -j Barcode_reads2 -q normal -a tagmap -w 4 -t 24:00:00 -e yiliao1022@gmail.com
+sbatch Barcode_reads2.slurm
+
+cat *RC1_001.fastq > read-BC_1.fastq
+cat *RC2_001.fastq > read-BC_2.fastq
+
+3. Run scaff10x:
+
+(A soft link of canu assembly to the current directory)
+ln -s /where/your/canu/result/assembly/path/MC.contigs.fasta MC.contigs.fasta
+/home1/05158/yiliao/scaff10x/scaff10x -nodes 46 -matrix 2000 -reads 10 -score 20 -pacbio 0 -edge 50000 -link 8 -block 10000 -align bwa MC.contigs.fasta read-BC_1.fastq read-BC_2.fastq MC_canu_scaff10x.fasta > try.out
+(cat the above command into scaff10x)
+launcher_creator.py -n scaff10x -j scaff10x -a tagmap -q largemem512GB -t 24:00:00 -e yiliao1022@gmail.com
+sbatch scaff10x.slurm
+
+
+
+
+
+
+
+
+
+
