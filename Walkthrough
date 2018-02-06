@@ -1,13 +1,55 @@
-Canu
+(1) Canu
+
+(We only have less than 20 coverage of the estimated genome size of coral PacBio reads, Canu is recommended to do the assembling after we tried with Falcon, minimap2/rancon pipleline and Canu)
+
+Reference: Koren S, Walenz BP, Berlin K, Miller JR, Phillippy AM. Canu: scalable and accurate long-read assembly via adaptive k-mer weighting and repeat separation. Genome Research. (2017)
+
+1. Install:
+git clone https://github.com/marbl/canu.git
+cd canu/src
+make -j 4
+(Note: Sometimes the installing process seems can not be finished smoothly in TACC (your own directory), please try one more time, in my experience, this failure of installing may just because a busy time of the system or out of space in some necessary files. 
+
+2. Run:
+Please Note: Canu depend on perl 5.12 or higher, make sure which version of perl installed in your own directory. TACC has perl module with version 5.22, it seems to be compatible. 
+So, if you encounter an error reporting for "File::Path 2.08 is required", you just need to enter the command "module load perl".
+
+/work/05158/yiliao/lonestar/bin/canu/Linux-amd64/bin/canu useGrid=remote -p MC -d coral genomeSize=500m correctedErrorRate=0.105 -pacbio-raw /work/05158/yiliao/lonestar/db/GDS1_filtered_subreads_combined.fastq
+(cat the above command to canu)
+
+launcher_creator.py -n canu -j canu -a tagmap -q largemem512GB -t 24:00:00 -e yiliao1022@gmail.com
+sbatch canu.slurm (Note: You need to manually edit the time set to be 48:00:00, it seems the laucher_creator.py have something wrong with set time to 48:00:00)
+
+Please especially note that: Generally, the above command will finish all steps (correction,trimming and assembling)launched by Canu and get the finished contigs. 
+However,TACC has a limitation of maximumal runing time (48 hours) for each job, in my experience, the correction step with our current PacBio reads (~15Gb) need (less) 48 hours to process.
+So,the above command will be canceled after it finished the correstion step (this is so lucky). To continue the assembling process, you need to submit another job. 
+
+cd coral;
+/work/05158/yiliao/lonestar/bin/canu/Linux-amd64/bin/canu useGrid=remote -p MC -d coral genomeSize=500m -pacbio-corrected coral/MC.correctedReads.fasta.gz
+(cat the above command to canu_trim)
+launcher_creator.py -n canu_trim -j canu_trim -a tagmap -q largemem512GB -t 24:00:00 -e yiliao1022@gmail.com
+sbatch canu_trim.slurm
+(This will continue the assembling process which have been terminated after the first step, you may need to manually remove the files that the first step have been generated for the trimming process).
+This step needs about 24 hours for our data.  
+
+The final assembly files are loaded at the coral directory: MC.contigs.fasta
+
+iTools Fatools -stat -InPut MC.contigs.fasta -OutPut MC.contigs.fasta.stat -N50Stat (Calculate the assembly information, iTools is a toolkits i usually use for deal with next generation data and fasta and fastq files)
+
+#NX	Scaffold_Length(bp)	Scaffold_Number(%)	ConTig_Length(bp)	ConTig_Number(%)
+N10	64651	630(2.09%)	64651	630(2.09%)
+N20	46831	1600(5.30%)	46831	1600(5.30%)
+N30	35732	2896(9.59%)	35732	2896(9.59%)
+N40	28122	4560(15.10%)	28122	4560(15.10%)
+N50	22246	6663(22.07%)	22246	6663(22.07%)
+N60	17676	9322(30.87%)	17676	9322(30.87%)
+N70	14062	12661(41.93%)	14062	12661(41.93%)
+N80	11111	16868(55.86%)	11111	16868(55.86%)
+N90	8570	22243(73.66%)	8570	22243(73.66%)
 
 
 
-
-
-
-
-
-Scaff10X 
+(2) Scaff10X 
 
 1. Install: 
 wget https://sourceforge.net/projects/phusion2/files/scaff10x/scaff10x-v1.1.tar.gz
