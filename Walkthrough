@@ -84,16 +84,47 @@ cat *RC2_001.fastq > read-BC_2.fastq
 
 (A soft link of canu assembly to the current directory)
 ln -s /where/your/canu/result/assembly/path/MC.contigs.fasta MC.contigs.fasta
-/home1/05158/yiliao/scaff10x/scaff10x -nodes 46 -matrix 2000 -reads 10 -score 20 -pacbio 0 -edge 50000 -link 8 -block 10000 -align bwa MC.contigs.fasta read-BC_1.fastq read-BC_2.fastq MC_canu_scaff10x.fasta > try.out
+/home1/05158/yiliao/scaff10x_2/scaff10x -nodes 60 -matrix 2000 -reads 8 -score 20 -longread 0 -edge 50000 -link 6 -block 10000 -align smalt MC.contigs.fasta read-BC_1.fastq read-BC_2.fastq MC_canu_scaff10x_1_new_10000.fasta
 (cat the above command into scaff10x)
 launcher_creator.py -n scaff10x -j scaff10x -a tagmap -q largemem512GB -t 24:00:00 -e yiliao1022@gmail.com
 sbatch scaff10x.slurm
 
+#NX	Scaffold_Length(bp)	Scaffold_Number(%)	ConTig_Length(bp)	ConTig_Number(%)
+N10	227915	175(0.83%)	64651	630(2.09%)
+N20	159985	452(2.14%)	46831	1600(5.30%)
+N30	119290	835(3.96%)	35732	2896(9.59%)
+N40	87247	1351(6.41%)	28122	4560(15.10%)
+N50	60849	2074(9.84%)	22246	6663(22.07%)
+N60	38275	3158(14.98%)	17676	9322(30.87%)
+N70	21157	5024(23.83%)	14062	12661(41.93%)
+N80	12965	8298(39.35%)	11111	16868(55.86%)
+N90	8955	13241(62.79%)	8570	22243(73.66%)
 
 
+Run more time to get a better assembly
+/home1/05158/yiliao/scaff10x_2/scaff10x -nodes 60 -matrix 2000 -reads 8 -score 20 -longread 0 -edge 50000 -link 6 -block 10000 -align smalt MC_canu_scaff10x_1_new_10000.fasta read-BC_1.fastq read-BC_2.fastq MC_canu_scaff10x_1_new_10000_10000.fasta
+
+#NX	Scaffold_Length(bp)	Scaffold_Number(%)	ConTig_Length(bp)	ConTig_Number(%)
+N10	512574	80(0.47%)	64651	630(2.09%)
+N20	379505	200(1.18%)	46831	1600(5.30%)
+N30	293600	358(2.12%)	35732	2896(9.59%)
+N40	219103	567(3.36%)	28122	4560(15.10%)
+N50	154285	856(5.07%)	22246	6663(22.07%)
+N60	99613	1278(7.56%)	17676	9322(30.87%)
+N70	41994	2070(12.25%)	14062	12661(41.93%)
+N80	14689	4475(26.49%)	11111	16868(55.86%)
+N90	9204	9125(54.01%)	8570	22243(73.66%)
 
 
+(3) LINK/ARCS
 
+1. Renumber your fraft / BWA index
+ln -s /scratch/05158/yiliao/10X_Pacbio_combined/New/2_scaff10x/scaff10_2/MC_canu_scaff10x_1_new_10000_10000.fasta MC_canu_scaff10x_1_new_10000_10000.fasta
+cat MC_canu_scaff10x_1_new_10000_10000.fasta | perl -ne 'chomp;if(/^\>/){$ct++;print ">$ct\n";}else{print "$_\n";}' > MC-renamed.fa
+bwa index MC-renamed.fa (You may need to summit the job to the compution nodes)
+
+2. align / sort bam files (The fastq file can fortuntatly use read-BC_1.fastq and read-BC_2.fastq which geneated at the scaff10x step, so that you not need to rename the read names)
+bwa mem -t 45 MC-renamed.fa /scratch/05158/yiliao/10X_Pacbio_combined/New/2_scaff10x/read-BC_1.fastq /scratch/05158/yiliao/10X_Pacbio_combined/New/2_scaff10x/read-BC_2.fastq > myresult.sam
 
 
 
