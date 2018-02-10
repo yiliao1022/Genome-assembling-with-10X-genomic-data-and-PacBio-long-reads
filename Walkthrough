@@ -143,8 +143,27 @@ bwa mem -t 45 MC-renamed.fa /scratch/05158/yiliao/10X_Pacbio_combined/New/2_scaf
 samtools view -S -b myresult.sam > myresult.bam
 samtools sort-n  myresult.bam -o myresult.sorted.bam (Note:alignments must be sorted in order of name)
 
-3. ARCS
+3. Run ARCS and Links (https://github.com/bcgsc/arcs/blob/master/Examples/pipeline_example.sh)
 arcs -f MC-renamed.fa -a myresult.sorted.bam -s 98 -c 5 -l 0 -d 0 -r 0.05 -e 30000 -m 20-10000 -v &> ARCSlog.txt
+python ~/arcs/Examples/makeTSVfile.py MC-renamed.fa.scaff_s98_c5_l0_d0_e30000_r0.05_original.gv MC-renamed.fa.c5_l0_d0_e30000_r0.05.tigpair_checkpoint.tsv MC-renamed.fa
+touch empty.fof
+/home1/05158/yiliao/LINKS/links_v1.8.5/LINKS -f MC-renamed.fa -s empty.fof -k 20 -b MC-renamed.fa.c5_l0_d0_e30000_r0.05 -l 5 -t 2 -a 0.3
+
+iTools Fatools stat -InPut MC-renamed.fa.c5_l0_d0_e30000_r0.05.scaffolds.fa -OutPut MC-renamed.fa.c5_l0_d0_e30000_r0.05.scaffolds.fa.stat -N50Stat
+
+#NX	Scaffold_Length(bp)	Scaffold_Number(%)	ConTig_Length(bp)	ConTig_Number(%)
+N10	686617	61(0.37%)	64651	630(2.09%)
+N20	503522	152(0.93%)	46831	1600(5.30%)
+N30	389083	271(1.66%)	35732	2896(9.59%)
+N40	293600	427(2.61%)	28122	4560(15.10%)
+N50	203173	641(3.91%)	22246	6663(22.07%)
+N60	124759	969(5.92%)	17676	9322(30.87%)
+N70	47736	1615(9.86%)	14062	12661(41.93%)
+N80	14759	3959(24.18%)	11111	16868(55.86%)
+N90	9208	8600(52.53%)	8570	22243(73.66%)
+
+(4) SSPACE-longread (Using this set of scaffolds, went back to the pacbio data to see if those reads could be used to further scaffold.)
+
 
 
 
