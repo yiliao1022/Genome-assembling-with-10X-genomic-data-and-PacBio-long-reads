@@ -141,7 +141,7 @@ bwa index MC-renamed.fa (You may need to summit the job to the compution nodes)
 2. Align / sort bam files (The fastq file can fortuntatly use read-BC_1.fastq and read-BC_2.fastq which geneated at the scaff10x step, so that you not need to rename the read names)
 bwa mem -t 45 MC-renamed.fa /scratch/05158/yiliao/10X_Pacbio_combined/New/2_scaff10x/read-BC_1.fastq /scratch/05158/yiliao/10X_Pacbio_combined/New/2_scaff10x/read-BC_2.fastq > myresult.sam
 samtools view -S -b myresult.sam > myresult.bam
-samtools sort myresult.bam -o myresult.sorted.bam
+samtools sort-n  myresult.bam -o myresult.sorted.bam (Note:alignments must be sorted in order of name)
 
 3. ARCS
 arcs -f MC-renamed.fa -a myresult.sorted.bam -s 98 -c 5 -l 0 -d 0 -r 0.05 -e 30000 -m 20-10000 -v &> ARCSlog.txt
