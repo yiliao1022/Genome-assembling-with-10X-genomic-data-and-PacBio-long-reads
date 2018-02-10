@@ -118,14 +118,33 @@ N90	9204	9125(54.01%)	8570	22243(73.66%)
 
 (3) LINK/ARCS
 
+Install ARCS
+
+download boost_1_61_0.tar.bz2 from http://www.boost.org/users/history/version_1_61_0.html
+tar -jxvf boost_1_61_0.tar.bz2
+put it somewhere you like: /home1/05158/yiliao/arcs
+git clone https://github.com/bcgsc/arcs.git
+cd arcs
+./autogen.sh
+./configure –-with-boost=/boost/path (/home1/05158/yiliao/arcs/boost) --prefix=/ARCS/PATH && make install
+
+Install LINK
+git clone https://github.com/bcgsc/LINKS.git
+tar -jxvf links_v1.8.5.tar.gz
+
+
 1. Renumber your fraft / BWA index
 ln -s /scratch/05158/yiliao/10X_Pacbio_combined/New/2_scaff10x/scaff10_2/MC_canu_scaff10x_1_new_10000_10000.fasta MC_canu_scaff10x_1_new_10000_10000.fasta
 cat MC_canu_scaff10x_1_new_10000_10000.fasta | perl -ne 'chomp;if(/^\>/){$ct++;print ">$ct\n";}else{print "$_\n";}' > MC-renamed.fa
 bwa index MC-renamed.fa (You may need to summit the job to the compution nodes)
 
-2. align / sort bam files (The fastq file can fortuntatly use read-BC_1.fastq and read-BC_2.fastq which geneated at the scaff10x step, so that you not need to rename the read names)
+2. Align / sort bam files (The fastq file can fortuntatly use read-BC_1.fastq and read-BC_2.fastq which geneated at the scaff10x step, so that you not need to rename the read names)
 bwa mem -t 45 MC-renamed.fa /scratch/05158/yiliao/10X_Pacbio_combined/New/2_scaff10x/read-BC_1.fastq /scratch/05158/yiliao/10X_Pacbio_combined/New/2_scaff10x/read-BC_2.fastq > myresult.sam
+samtools view -S -b myresult.sam > myresult.bam
+samtools sort myresult.bam -o myresult.sorted.bam
 
+3. ARCS
+arcs -f MC-renamed.fa -a myresult.sorted.bam -s 98 -c 5 -l 0 -d 0 -r 0.05 -e 30000 -m 20-10000 -v &> ARCSlog.txt
 
 
 
