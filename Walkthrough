@@ -163,7 +163,10 @@ N80	14759	3959(24.18%)	11111	16868(55.86%)
 N90	9208	8600(52.53%)	8570	22243(73.66%)
 
 (4) SSPACE-longread (Using this set of scaffolds, went back to the pacbio data to see if those reads could be used to further scaffold.)
-
+Install
+To install SSPACE-LongRead.pl you must replace the perl5 lib with your local perl5 (because the perl5 installed in system version can't compatiple with SSPACE, it needs Getopt.pl), just edit it at the .bashrc file (#  module load bioperl).   The command "cpan install Perl4::CoreLibs” will install the perl5 in your local user account and add the perl lib to the PATH (export PATH=$HOME/perl5/lib/perl5:$PATH)
+Run
+perl /home1/05158/yiliao/SSPACE-LongRead_v1-1/SSPACE-LongRead.pl -c MC-renamed.fa.c5_l0_d0_e30000_r0.05.scaffolds.fa -p /work/05158/yiliao/lonestar/db/GDS1_filtered_subreads_combined.fastq -b SSPACE -t 60
 
 
 
