@@ -168,5 +168,33 @@ To install SSPACE-LongRead.pl you must replace the perl5 lib with your local per
 Run
 perl /home1/05158/yiliao/SSPACE-LongRead_v1-1/SSPACE-LongRead.pl -c MC-renamed.fa.c5_l0_d0_e30000_r0.05.scaffolds.fa -p /work/05158/yiliao/lonestar/db/GDS1_filtered_subreads_combined.fastq -b SSPACE -t 60
 
+It failure to run the alignment by blasr.
+So you need to run it manually with the following command:
+blasr /work/05158/yiliao/lonestar/db/GDS1_filtered_subreads_combined.fastq ./SSPACE/intermediate_files/contigs.fa -minMatch 5 -bestn 10 -noSplitSubreads -advanceExactMatches 1 -nCandidates 1 -maxAnchorsPerPosition 1 -sdpTupleSize 7 -nproc 60 -out ./SSPACE/intermediate_files/BLASR_results.txt
+
+Then:
+perl /home1/05158/yiliao/SSPACE-LongRead_v1-1/SSPACE-LongRead.pl -c MC-renamed.fa.c5_l0_d0_e30000_r0.05.scaffolds.fa  -s 1 -p /work/05158/yiliao/lonestar/db/GDS1_filtered_subreads_combined.fastq -b SSPACE -t 60
+
+#NX	Scaffold_Length(bp)	Scaffold_Number(%)	ConTig_Length(bp)	ConTig_Number(%)
+N10	789724	53(0.51%)	64651	630(2.09%)
+N20	590510	134(1.28%)	46839	1600(5.30%)
+N30	450634	239(2.29%)	35731	2897(9.59%)
+N40	344283	375(3.59%)	28122	4561(15.10%)
+N50	251787	556(5.33%)	22261	6663(22.06%)
+N60	168108	814(7.80%)	17690	9322(30.86%)
+N70	95846	1234(11.82%)	14066	12660(41.91%)
+N80	40279	2122(20.33%)	11112	16867(55.84%)
+N90	16532	4254(40.75%)	8568	22243(73.64%)
+
+(5) Another round of scaff10x
+mkdir 5_scaff10x
+cd 5_scaff10x
+ln -s /scratch/05158/yiliao/10X_Pacbio_combined/New/4_SSPACE_LongRead/SSPACE/scaffolds.fasta scaffolds.fasta
+ln -s /scratch/05158/yiliao/10X_Pacbio_combined/New/2_scaff10x/read-BC_1.fastq read-BC_1.fastq
+ln -s /scratch/05158/yiliao/10X_Pacbio_combined/New/2_scaff10x/read-BC_2.fastq read-BC_2.fastq
+/home1/05158/yiliao/scaff10x_2/scaff10x -nodes 60 -matrix 2000 -reads 10 -score 20 -longread 0 -edge 50000 -link 8 -block 10000 -align smalt scaffolds.fasta read-BC_1.fastq read-BC_2.fastq MC_scaff10x_10000.fasta
+
+
+
 
 
