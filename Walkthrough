@@ -194,7 +194,18 @@ ln -s /scratch/05158/yiliao/10X_Pacbio_combined/New/2_scaff10x/read-BC_1.fastq r
 ln -s /scratch/05158/yiliao/10X_Pacbio_combined/New/2_scaff10x/read-BC_2.fastq read-BC_2.fastq
 /home1/05158/yiliao/scaff10x_2/scaff10x -nodes 60 -matrix 2000 -reads 10 -score 20 -longread 0 -edge 50000 -link 8 -block 10000 -align smalt scaffolds.fasta read-BC_1.fastq read-BC_2.fastq MC_scaff10x_10000.fasta
 
+#NX	Scaffold_Length(bp)	Scaffold_Number(%)	ConTig_Length(bp)	ConTig_Number(%)
+N10	949768	45(0.45%)	64651	630(2.09%)
+N20	681705	113(1.14%)	46839	1600(5.30%)
+N30	518737	203(2.05%)	35731	2897(9.59%)
+N40	408596	319(3.22%)	28122	4561(15.10%)
+N50	314893	470(4.75%)	22261	6663(22.06%)
+N60	218593	673(6.80%)	17690	9322(30.86%)
+N70	123976	995(10.05%)	14066	12660(41.91%)
+N80	45292	1712(17.29%)	11112	16867(55.84%)
+N90	16901	3741(37.78%)	8568	22243(73.64%)
 
+(6) Gapfilling with pbjelly
 
 
 
