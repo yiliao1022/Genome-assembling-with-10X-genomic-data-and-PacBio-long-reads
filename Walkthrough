@@ -207,5 +207,36 @@ N90	16901	3741(37.78%)	8568	22243(73.64%)
 
 (6) Gapfilling with pbjelly
 
+Download PBSuite_15.8.24 at https://sourceforge.net/projects/pb-jelly/
+
+##Install networkx, it seems the Python 2.7.12 have no networkx package.
+pip install --upgrade --user networkx 
+cd PBSuite_15.8.24
+source setup.sh
+
+######Prepare the Protocol.xml file ##########################
+<jellyProtocol>
+    <reference>/scratch/05158/yiliao/10X_Pacbio_combined/New/5_scaff10x/MC_scaff10x_10000.fasta</reference>  
+    <outputDir>/scratch/05158/yiliao/10X_Pacbio_combined/New/6_pbjelly/</outputDir>
+    <blasr>-minMatch 8 -minPctIdentity 70 -bestn 1 -nCandidates 20 -maxScore -500 -nproc 4 -noSplitSubreads</blasr>
+    <input baseDir="/work/05158/yiliao/lonestar/db/">
+        <job>GDS1_filtered_subreads_combined.fastq</job>
+    </input>
+</jellyProtocol>
+###############################################################
+/work/05158/yiliao/lonestar/software/PBSuite_15.8.24/bin/Jelly.py setup Protocol.xml
+/work/05158/yiliao/lonestar/software/PBSuite_15.8.24/bin/Jelly.py mapping Protocol.xml
+
+
+
+
+
+
+
+
+
+
+
+
 
 
